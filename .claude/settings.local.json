@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tmux list-sessions:*)",
+      "Bash(./scripts/preview-helper.sh:*)",
+      "Bash(tmux show-options:*)",
+      "Bash(./scripts/hook-based-switcher.sh:*)",
+      "Bash(./test-navigation.sh:*)",
+      "Bash(./test-filtered-output.sh:*)"
+    ],
+    "deny": []
+  }
+}
