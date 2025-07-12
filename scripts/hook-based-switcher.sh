@@ -2,6 +2,7 @@
 
 # Hook-based session switcher that reads status from files
 
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STATUS_DIR="$HOME/.cache/tmux-claude-status"
 
 # Function to check if Claude is in a session (actually running, not just has status file)
@@ -157,7 +158,7 @@ fi
 sessions=$(get_sessions_with_status)
 
 # Start smart monitor (will auto-stop when no SSH sessions)
-MONITOR_SCRIPT="$(dirname "$0")/../smart-monitor.sh"
+MONITOR_SCRIPT="$CURRENT_DIR/../smart-monitor.sh"
 if [ -f "$MONITOR_SCRIPT" ]; then
     "$MONITOR_SCRIPT" start >/dev/null 2>&1
 fi
@@ -170,7 +171,7 @@ selected=$(echo "$sessions_with_reminder" | fzf \
     --ansi \
     --no-sort \
     --header="Sessions grouped by Claude status | j/k: navigate | Enter: select | Esc: cancel | Ctrl-R: refresh" \
-    --preview 'if echo {} | grep -q "━━━"; then echo "Category separator"; else session=$(echo {} | awk "{print \$1}"); tmux capture-pane -ep -t "$session" 2>/dev/null || echo "No preview available"; fi' \
+    --preview 'bash -c '\'''"$CURRENT_DIR/preview-helper.sh"' "$@"'\'' -- {}' \
     --preview-window=right:40%:wrap \
     --prompt="Session> " \
     --bind="j:down,k:up,ctrl-j:preview-down,ctrl-k:preview-up" \
